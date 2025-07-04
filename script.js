@@ -29,6 +29,18 @@ const init = function () {
   player1El.classList.remove('player--winner');
   player0El.classList.add('player--active');
   player1El.classList.remove('player--active');
+
+  setInterval(()=>{
+    const dice = Math.trunc(Math.random() * 6) + 1;
+    diceEl.classList.remove('hidden');
+    diceEl.src = `dice-${dice}.png`;
+    if (dice !== 1) {
+      currentScore += dice;
+      document.getElementById(`current--${activePlayer}`).textContent = currentScore;
+    } else {
+      switchPlayer();
+    }
+  },5000)
 };
 
 init();
@@ -56,50 +68,37 @@ btnRoll.addEventListener('click', function () {
     diceEl.classList.remove('hidden');
     diceEl.src = `dice-${dice}.png`;
 
-    switch (dice) {
-      case 1:
-        switchPlayer();
-        break;
-      default:
-        currentScore += dice;
-        document.getElementById(`current--${activePlayer}`).textContent = currentScore;
-        break;
+    if (dice !== 1) {
+      currentScore += dice;
+      document.getElementById(`current--${activePlayer}`).textContent = currentScore;
+    } else {
+      switchPlayer();
     }
   }
 });
 
 btnHold.addEventListener('click', function () {
   if (playing) {
-    switch (activePlayer) {
-      case 0:
-        scorePlayer0 += currentScore;
-        score0El.textContent = scorePlayer0;
-
-        switch (scorePlayer0 >= 100) {
-          case true:
-            playing = false;
-            diceEl.classList.add('hidden');
-            player0El.classList.add('player--winner');
-            break;
-          default:
-            switchPlayer();
-        }
-        break;
-
-      case 1:
-        scorePlayer1 += currentScore;
-        score1El.textContent = scorePlayer1;
-
-        switch (scorePlayer1 >= 100) {
-          case true:
-            playing = false;
-            diceEl.classList.add('hidden');
-            player1El.classList.add('player--winner');
-            break;
-          default:
-            switchPlayer();
-        }
-        break;
+    if (activePlayer === 0) {
+      scorePlayer0 += currentScore;
+      score0El.textContent = scorePlayer0;
+      if (scorePlayer0 >= 100) {
+        playing = false;
+        diceEl.classList.add('hidden');
+        player0El.classList.add('player--winner');
+      } else {
+        switchPlayer();
+      }
+    } else {
+      scorePlayer1 += currentScore;
+      score1El.textContent = scorePlayer1;
+      if (scorePlayer1 >= 100) {
+        playing = false;
+        diceEl.classList.add('hidden');
+        player1El.classList.add('player--winner');
+      } else {
+        switchPlayer();
+      }
     }
   }
 });
